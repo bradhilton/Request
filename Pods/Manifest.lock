@@ -1,0 +1,28 @@
+PODS:
+  - Convertible (0.9.1):
+    - SwiftKVC (~> 1.0.0)
+  - SwiftKVC (1.0.0)
+
+DEPENDENCIES:
+  - Convertible (from `https://github.com/bradhilton/Convertible.git`)
+  - SwiftKVC (from `https://github.com/bradhilton/SwiftKVC.git`)
+
+EXTERNAL SOURCES:
+  Convertible:
+    :git: https://github.com/bradhilton/Convertible.git
+  SwiftKVC:
+    :git: https://github.com/bradhilton/SwiftKVC.git
+
+CHECKOUT OPTIONS:
+  Convertible:
+    :commit: c6cb1fdef2aa23bdc27ef440d5da333611118501
+    :git: https://github.com/bradhilton/Convertible.git
+  SwiftKVC:
+    :commit: 47c3ba969df9607cf51ae7105db96b2505dcc7a8
+    :git: https://github.com/bradhilton/SwiftKVC.git
+
+SPEC CHECKSUMS:
+  Convertible: 3a7c306608438c32f4f0a5f24f860392ac5b97e1
+  SwiftKVC: a431fcc7a809c7a535a472381fdb8b3e8998796c
+
+COCOAPODS: 0.39.0
