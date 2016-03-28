@@ -10,7 +10,7 @@ import Foundation
 
 internal class TaskDelegate : NSObject, NSURLSessionDataDelegate {
     
-    var data: Request.Data
+    var request: Request
     let body = NSMutableData()
     var response: Response<NSData>?
     var errors = [ErrorType]()
@@ -18,56 +18,35 @@ internal class TaskDelegate : NSObject, NSURLSessionDataDelegate {
     var sent = 0.0 { didSet { if oldValue != sent { reportProgress() } } }
     var received = 0.0 { didSet { if oldValue != received { reportProgress() } } }
     
-    init(data: Request.Data) {
-        self.data = data
+    init(request: Request) {
+        self.request = request
         super.init()
     }
     
     func task() -> NSURLSessionTask {
-        let error = serializeData()
-        data.handlers.startHandlers.forEach { $0(request: self.data.request) }
+        request.callbacks.reportStart(request)
         reportProgress()
-        if let error = error {
+        do {
+            return try startTask(request.foundationRequest())
+        } catch {
             return failedTaskWithError(error)
-        } else {
-            return startTask()
         }
     }
     
     func handleError(error: ErrorType) {
         errors.append(error)
-        data.handlers.failureHandler?(error: error, request: data.request)
-        data.handlers.failureHandler = nil
-        data.handlers.errorHandlers.forEach { $0(error: error, request: data.request) }
+        request.callbacks.reportFailure(error, request: request)
+        request.callbacks.failureCallback = nil
+        request.callbacks.reportError(error, request: request)
     }
     
     func complete(response: Response<NSData>?) {
         if let response = response {
-            handleResponse(response)
-        }
-        data.handlers.completionHandlers.forEach {
-            $0(response: response, errors: errors, request: data.request)
-        }
-    }
-    
-    private func handleResponse(response: Response<NSData>) {
-        data.handlers.responseHandlers.forEach {
-            guard $0.contains(response.statusCode) else { return }
-            do {
-                try $1(response: response, request: data.request)
-            } catch {
+            for error in request.callbacks.reportResponse(response, request: request) {
                 handleError(error)
             }
         }
-    }
-    
-    private func serializeData() -> ErrorType? {
-        do {
-            data.request.HTTPBody = try data.body?.serializeToData()
-            return nil
-        } catch {
-            return error
-        }
+        request.callbacks.reportCompletion(response, errors: errors, request: request)
     }
     
     private func failedTaskWithError(error: ErrorType) -> NSURLSessionTask {
@@ -76,18 +55,18 @@ internal class TaskDelegate : NSObject, NSURLSessionDataDelegate {
         return FailedTask()
     }
     
-    private func startTask() -> NSURLSessionTask {
-        let session = NSURLSession(configuration: data.configuration, delegate: self, delegateQueue: data.queue)
-        let task = session.dataTaskWithRequest(data.request)
+    private func startTask(foundationRequest: NSURLRequest) -> NSURLSessionTask {
+        let session = NSURLSession(configuration: request.configuration.foundationConfiguration, delegate: self, delegateQueue: NSOperationQueue())
+        let task = session.dataTaskWithRequest(foundationRequest)
         task.resume()
-        data.logging ? Logging.logRequest(data.request) : ()
+        request.logging ? Logging.logRequest(foundationRequest) : ()
         startTime = NSDate()
         session.finishTasksAndInvalidate()
         return task
     }
     
     private func reportProgress() {
-        data.handlers.progressHandlers.forEach { $0(sent: sent, received: received, request: data.request) }
+        request.callbacks.reportProgress(sent, received: received, request: request)
     }
     
 }

@@ -1,28 +1,19 @@
 PODS:
-  - Convertible (0.9.1):
-    - SwiftKVC (~> 1.0.0)
-  - SwiftKVC (1.0.0)
+  - Allegro (1.1.0)
+  - Convertible (1.0.3):
+    - Allegro (~> 1.1.0)
 
 DEPENDENCIES:
-  - Convertible (from `https://github.com/bradhilton/Convertible.git`)
-  - SwiftKVC (from `https://github.com/bradhilton/SwiftKVC.git`)
+  - Convertible (from `~/Developer/iOS/Skyvive/Convertible`)
 
 EXTERNAL SOURCES:
   Convertible:
-    :git: https://github.com/bradhilton/Convertible.git
-  SwiftKVC:
-    :git: https://github.com/bradhilton/SwiftKVC.git
-
-CHECKOUT OPTIONS:
-  Convertible:
-    :commit: c6cb1fdef2aa23bdc27ef440d5da333611118501
-    :git: https://github.com/bradhilton/Convertible.git
-  SwiftKVC:
-    :commit: 47c3ba969df9607cf51ae7105db96b2505dcc7a8
-    :git: https://github.com/bradhilton/SwiftKVC.git
+    :path: "~/Developer/iOS/Skyvive/Convertible"
 
 SPEC CHECKSUMS:
-  Convertible: 3a7c306608438c32f4f0a5f24f860392ac5b97e1
-  SwiftKVC: a431fcc7a809c7a535a472381fdb8b3e8998796c
+  Allegro: 567a663bcff8b85a5992d3b189c3faf7509ede00
+  Convertible: 370091bd9ebfbf2e86125e1df79e22734dbdf301
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 590b3513f6a42287fdd269e1bed1326b635a3e71
+
+COCOAPODS: 1.0.0.beta.3

@@ -12,25 +12,30 @@ import Convertible
 public struct Response<Body : DataInitializable> {
     
     public let body: Body
-    public let response: NSHTTPURLResponse
+    public let foundationResponse: NSHTTPURLResponse
+    public let responseTime: NSTimeInterval
     internal let options: [ConvertibleOption]
     
     public var statusCode: Int {
-        return response.statusCode
+        return foundationResponse.statusCode
     }
     
     public var headers: [String : String] {
-        return response.allHeaderFields as? [String : String] ?? [:]
+        return foundationResponse.allHeaderFields as? [String : String] ?? [:]
     }
     
-    internal init(body: Body, response: NSHTTPURLResponse, options: [ConvertibleOption]) {
-        self.body = body
-        self.response = response
-        self.options = options
+}
+
+extension Response where Body : NSData {
+    
+    public func createResponse<T : DataInitializable>() throws -> Response<T> {
+        return try Response<T>(body: T.initializeWithData(body, options: options), foundationResponse: foundationResponse, responseTime: responseTime, options: options)
     }
     
-    internal init(data: NSData, response: NSHTTPURLResponse, options: [ConvertibleOption]) throws {
-        try self.init(body: Body.initializeWithData(data, options: options), response: response,  options: options)
+    internal func handleResponse<T : DataInitializable>(handler: (Response<T>, Request) -> Void) {
+        NSOperationQueue().addOperationWithBlock {
+            
+        }
     }
     
 }

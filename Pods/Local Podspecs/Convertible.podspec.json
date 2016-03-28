@@ -1,6 +1,6 @@
 {
   "name": "Convertible",
-  "version": "0.9.1",
+  "version": "1.0.3",
   "summary": "Swift Framework For Conversions Between JSON, Data And More",
   "description": "Converting your basic types and models to-and-from JSON, binary data, etc. is a common task in application development.\nConvertible defines a collection of Swift protocols and implementations that makes the conversion process easy, so you don't have to write boilerplate code.",
   "homepage": "https://github.com/bradhilton/Convertible",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/bradhilton/Convertible.git",
-    "tag": "0.9.1"
+    "tag": "1.0.3"
   },
   "platforms": {
     "ios": "8.0",
@@ -31,8 +31,8 @@
   },
   "requires_arc": true,
   "dependencies": {
-    "SwiftKVC": [
-      "~> 1.0.0"
+    "Allegro": [
+      "~> 1.1.0"
     ]
   }
 }

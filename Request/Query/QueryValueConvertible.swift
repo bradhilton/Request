@@ -8,13 +8,13 @@
 
 import Foundation
 
-public protocol QueryValueConvertible {
+public protocol QueryValueSerializable {
     
     var queryValue: String { get }
     
 }
 
-extension QueryValueConvertible {
+extension QueryValueSerializable {
     
     public var queryValue: String {
         return String(self)
@@ -22,15 +22,15 @@ extension QueryValueConvertible {
     
 }
 
-extension String : QueryValueConvertible {}
-extension Int : QueryValueConvertible {}
-extension Bool : QueryValueConvertible {}
+extension String : QueryValueSerializable {}
+extension Int : QueryValueSerializable {}
+extension Bool : QueryValueSerializable {}
 
-extension Array : QueryValueConvertible {
+extension Array : QueryValueSerializable {
     
     public var queryValue: String {
         return map { element -> String in
-            if let element = element as? QueryValueConvertible {
+            if let element = element as? QueryValueSerializable {
                 return element.queryValue
             } else {
                 return String(element)

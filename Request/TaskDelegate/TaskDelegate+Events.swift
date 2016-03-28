@@ -30,9 +30,10 @@ extension TaskDelegate {
             if let error = error { throw error }
             received = 1.0
             let foundationResponse = try self.foundationResponse(task)
-            data.logging ? Logging.logResponse(foundationResponse, request: data.request, responseTime: NSDate().timeIntervalSinceDate(startTime), data: body) : ()
-            response = Response(body: body as NSData, response: foundationResponse, options: data.options)
-            try handleSuccess(response!)
+            let responseTime = NSDate().timeIntervalSinceDate(startTime)
+            request.logging ? Logging.logResponse(foundationResponse, request: request, responseTime: responseTime, data: body) : ()
+            response = Response(body: body as NSData, foundationResponse: foundationResponse, responseTime: responseTime, options: request.options)
+            try request.callbacks.reportSuccess(response!, request: request)
         } catch {
             handleError(error)
         }
@@ -44,13 +45,6 @@ extension TaskDelegate {
             throw UnknownError(description: "Task did not return NSHTTPURLResponse")
         }
         return foundationResponse
-    }
-    
-    private func handleSuccess(response: Response<NSData>) throws {
-        guard data.handlers.successCodes.contains(response.statusCode) else {
-            throw ResponseError(response: response)
-        }
-        try data.handlers.successHandler?(response: response, request: data.request)
     }
     
     private func progress(actual: Int64, expected: Int64) -> Double {

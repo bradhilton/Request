@@ -2,74 +2,42 @@
 //  Request.swift
 //  Request
 //
-//  Created by Bradley Hilton on 1/21/16.
+//  Created by Bradley Hilton on 2/5/16.
 //  Copyright © 2016 Brad Hilton. All rights reserved.
 //
 
 import Foundation
-import Convertible
 
-public class Request {
+public struct Request {
     
-    internal var data = Request.Data()
+    public var url: Url = Url()
+    public var mainDocumentURL: Url?
+    public var method: Method = .GET
+    public var headers: [String : String] = [:]
+    public var body: DataSerializable?
+    public var configuration: Configuration = Configuration()
+    public var callbacks = Callbacks()
+    public var options = [ConvertibleOption]()
+    public var logging = false
     
-    public init(_ absoluteString: String) {
-        self.absoluteString(absoluteString)
+    public init(_ url: Url) {
+        self.url = url
     }
     
-    public init(_ request: Request) {
-        self.data = request.data
+    public init(_ string: String) {
+        self.url = Url(string)
     }
     
-    public func request(request: NSURLRequest) -> Self {
-        guard let request = request.mutableCopy() as? NSMutableURLRequest else { return self }
-        data.request = request
-        return self
+    public init() {
+        self.url = Url()
     }
     
-    public func body(body: DataSerializable?) -> Self {
-        data.body = body
-        return self
-    }
-    
-    public func configuration(configuration: NSURLSessionConfiguration) -> Self {
-        guard let configuration = configuration.copy() as? NSURLSessionConfiguration else { return self }
-        data.configuration = configuration
-        return self
-    }
-    
-    public func queue(queue: NSOperationQueue?) -> Self {
-        data.queue = queue
-        return self
-    }
-    
-    public func options(options: [ConvertibleOption]) -> Self {
-        data.options = options
-        return self
-    }
-    
-    public func logging(logging: Bool) -> Self {
-        data.logging = logging
-        return self
+    public func build() -> Builder {
+        return Builder(self)
     }
     
     public func begin() -> NSURLSessionTask {
-        return TaskDelegate(data: data.copy).task()
-    }
-    
-    public func successCodes(successCodes: ResponseCodes...) -> Self {
-        return self.successCodes(successCodes)
-    }
-    
-    internal func successCodes(successCodes: [ResponseCodes]) -> Self {
-        data.handlers.successCodes = reduceResponseCodes(successCodes)
-        return self
-    }
-    
-    public func success<T : DataInitializable>(successCodes: ResponseCodes..., handler: ((response: Response<T>, request: NSURLRequest) -> Void)?) -> Self {
-        if successCodes.count > 0 { self.successCodes(successCodes) }
-        data.handlers.successHandler = { handler?(response: try Response(data: $0.body, response: $0.response, options: $0.options), request: $1) }
-        return self
+        return TaskDelegate(request: self).task()
     }
     
 }

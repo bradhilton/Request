@@ -10,18 +10,10 @@ import Foundation
 
 public struct QueryItems : DictionaryLiteralConvertible {
     
-    private var items: [(String, QueryValueConvertible?)]
+    internal var items: [QueryItem]
     
-    internal var foundationQueryItems: [NSURLQueryItem] {
-        var foundationQueryItems = [NSURLQueryItem]()
-        items.forEach {
-            foundationQueryItems.append(NSURLQueryItem(name: $0, value: $1?.queryValue))
-        }
-        return foundationQueryItems
-    }
-    
-    public init(dictionaryLiteral elements: (String, QueryValueConvertible?)...) {
-        self.items = elements
+    public init(dictionaryLiteral elements: (String, QueryValueSerializable?)...) {
+        self.items = elements.map { QueryItem(name: $0, value: $1) }
     }
     
 }

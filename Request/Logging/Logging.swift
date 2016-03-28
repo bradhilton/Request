@@ -12,24 +12,28 @@ struct Logging {
     
     static func logRequest(request: NSURLRequest) {
         if let method = request.HTTPMethod, url = request.URL?.absoluteString {
-                print("\n---> \(method) \(url)")
+                print("---> \(method) \(url)")
                 printHeaderFields(request.allHTTPHeaderFields)
                 printBody(request.HTTPBody)
                 print("---> END " + bytesDescription(request.HTTPBody))
         }
     }
     
-    static func logResponse(response: NSHTTPURLResponse, request: NSURLRequest, responseTime: NSTimeInterval, data: NSData) {
-        if let method = request.HTTPMethod, url = request.URL?.absoluteString {
-            print("\n<--- \(method) \(url) (\(response.statusCode), \(responseTimeDescription(responseTime)))")
-            printHeaderFields(response.allHeaderFields)
-            printBody(data)
-            print("<--- END " + bytesDescription(data))
-        }
+    static func logResponse(response: NSHTTPURLResponse, request: Request, responseTime: NSTimeInterval, data: NSData) {
+        print("<--- \(request.method.rawValue) \(request.url.string) (\(response.statusCode), \(responseTimeDescription(responseTime)))")
+        printHeaderFields(response.allHeaderFields)
+        printBody(data)
+        print("<--- END " + bytesDescription(data))
     }
     
     private static func responseTimeDescription(responseTime: NSTimeInterval) -> NSString {
         return NSString(format: "%0.2fs", responseTime)
+    }
+    
+    private static func printHeaders(headers: [String : String]) {
+        for (field, value) in headers {
+            print("\(field): \(value)")
+        }
     }
     
     private static func printHeaderFields(headerFields: [NSObject : AnyObject]?) {
