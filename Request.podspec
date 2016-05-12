@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/bradhilton/Request.git", :tag => "0.1.1" }
 
   s.ios.deployment_target = "8.0"
-  s.osx.deployment_target = "10.9"
+  s.osx.deployment_target = "10.10"
 
   s.source_files  = "Request", "Request/**/*.{swift,h,m}"
   s.requires_arc = true
